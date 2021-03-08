@@ -88,7 +88,9 @@ final class UnfairLock: Lock {
     private let unfairLock: os_unfair_lock_t
 
     init() {
+        //clb note 分配多少内存
         unfairLock = .allocate(capacity: 1)
+        //clb note 初始化内存
         unfairLock.initialize(to: os_unfair_lock())
     }
 

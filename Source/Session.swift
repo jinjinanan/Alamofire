@@ -1047,6 +1047,7 @@ open class Session {
 
         let initialRequest: URLRequest
 
+        //clb note 验证request是否是合法的URLRequest    
         do {
             initialRequest = try convertible.asURLRequest()
             try initialRequest.validate()
@@ -1059,7 +1060,9 @@ open class Session {
 
         guard !request.isCancelled else { return }
 
+        // clb note 拦截器
         guard let adapter = adapter(for: request) else {
+        
             rootQueue.async { self.didCreateURLRequest(initialRequest, for: request) }
             return
         }
@@ -1092,6 +1095,7 @@ open class Session {
         requestTaskMap[request] = task
         request.didCreateTask(task)
 
+        // clb note 更新任务状态
         updateStatesForTask(task, request: request)
     }
 

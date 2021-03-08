@@ -32,6 +32,7 @@ extension URLRequest {
     }
 
     public func validate() throws {
+        // clb note 简单校验GET的方法，不能有httpBody
         if method == .get, let bodyData = httpBody {
             throw AFError.urlRequestValidationFailed(reason: .bodyDataInGETRequest(bodyData))
         }

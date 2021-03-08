@@ -46,19 +46,19 @@ public class Request {
         /// enqueued on their respective queues.
         case finished
 
-        /// Determines whether `self` can be transitioned to the provided `State`.
+        /// Determines whether `self` can be transitioned to the provided `State`. // clb note 决定自己是否可以转换到地宫的状态
         func canTransitionTo(_ state: State) -> Bool {
             switch (self, state) {
             case (.initialized, _):
-                return true
+                return true // clb note 初始状态可以变换为任何状态
             case (_, .initialized), (.cancelled, _), (.finished, _):
-                return false
+                return false //clb note 任何状态不能转换为初始状态, 取消,完成状态不能转换为其他状态
             case (.resumed, .cancelled), (.suspended, .cancelled), (.resumed, .suspended), (.suspended, .resumed):
-                return true
+                return true //clb note 互相可以转换的状态
             case (.suspended, .suspended), (.resumed, .resumed):
-                return false
+                return false // clb note 挂起与继续状态不能转换为自身
             case (_, .finished):
-                return true
+                return true // clb note 任何状态(除了cancelled,finished)可以直接转为完成状态
             }
         }
     }
@@ -281,8 +281,10 @@ public class Request {
     func didCreateInitialURLRequest(_ request: URLRequest) {
         dispatchPrecondition(condition: .onQueue(underlyingQueue))
 
+// clb read       MutableState是一个存储各种状态（如：请求状态，任务，请求，重试次数，下载/重定向处理等）的结构体，这个结构体内的元素都会随着请求状态的改变而改变
         $mutableState.write { $0.requests.append(request) }
 
+//        事件监听者的初始化URLRequest方法
         eventMonitor?.request(self, didCreateInitialURLRequest: request)
     }
 
